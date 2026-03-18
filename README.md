@@ -15,6 +15,12 @@ This project demonstrates fundamental **network traffic analysis**, a key concep
 - Display source and destination IP addresses
 - Simple command-line interface
 
+## Advanced Features
+
+- Filter packets by protocol (TCP, UDP, ICMP)
+- Filter traffic by specific port (e.g., 80, 443)
+- Monitor selected network traffic in real-time
+  
 ## Technologies Used
 
 - Python
