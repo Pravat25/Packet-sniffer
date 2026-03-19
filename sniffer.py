@@ -1,8 +1,9 @@
 from scapy.all import sniff, IP, TCP, UDP, ICMP
+from datetime import datetime
 
 packet_count = 0
 
-# Get user input for filtering
+# Filters
 filter_protocol = input("Filter by protocol (tcp/udp/icmp/all): ").lower()
 filter_port = input("Filter by port (or press Enter for all): ")
 
@@ -25,7 +26,6 @@ def packet_callback(packet):
     sport = None
     dport = None
 
-    # Detect protocol
     if packet.haslayer(TCP):
         protocol = "tcp"
         sport = packet[TCP].sport
@@ -39,24 +39,30 @@ def packet_callback(packet):
     elif packet.haslayer(ICMP):
         protocol = "icmp"
 
-    # Apply protocol filter
+    # Apply filters
     if filter_protocol != "all" and protocol != filter_protocol:
         return
 
-    # Apply port filter
     if filter_port:
         if sport != filter_port and dport != filter_port:
             return
 
     packet_count += 1
 
-    # Print result
+    timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     if protocol in ["tcp", "udp"]:
-        print(f"[{packet_count}] {protocol.upper()} {src}:{sport} -> {dst}:{dport}")
+        log = f"[{packet_count}] {timestamp} {protocol.upper()} {src}:{sport} -> {dst}:{dport}"
     else:
-        print(f"[{packet_count}] {protocol.upper()} {src} -> {dst}")
+        log = f"[{packet_count}] {timestamp} {protocol.upper()} {src} -> {dst}"
+
+    print(log)
+
+    # Save to file
+    with open("packet_log.txt", "a") as f:
+        f.write(log + "\n")
 
 
-print("\nStarting filtered packet sniffer...\n")
+print("\nStarting advanced packet sniffer with logging...\n")
 
 sniff(prn=packet_callback, count=50)
