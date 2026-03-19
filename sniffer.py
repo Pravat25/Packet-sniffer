@@ -1,7 +1,20 @@
-from scapy.all import sniff, IP, TCP, UDP, ICMP
+from scapy.all import sniff, IP, TCP, UDP, ICMP, get_if_list
 from datetime import datetime
 
 packet_count = 0
+
+# Show available interfaces
+print("\nAvailable Network Interfaces:")
+interfaces = get_if_list()
+
+for i, iface in enumerate(interfaces):
+    print(f"{i}: {iface}")
+
+# Select interface
+iface_index = int(input("\nSelect interface number: "))
+selected_iface = interfaces[iface_index]
+
+print(f"\nUsing interface: {selected_iface}")
 
 # Filters
 filter_protocol = input("Filter by protocol (tcp/udp/icmp/all): ").lower()
@@ -58,11 +71,10 @@ def packet_callback(packet):
 
     print(log)
 
-    # Save to file
     with open("packet_log.txt", "a") as f:
         f.write(log + "\n")
 
 
-print("\nStarting advanced packet sniffer with logging...\n")
+print("\nStarting packet sniffer...\n")
 
-sniff(prn=packet_callback, count=50)
+sniff(prn=packet_callback, iface=selected_iface, count=50)
