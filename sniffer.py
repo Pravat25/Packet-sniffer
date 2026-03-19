@@ -7,7 +7,7 @@ packet_count = 0
 filter_protocol = input("Filter by protocol (tcp/udp/icmp/all): ").lower()
 filter_port = input("Filter by port (or press Enter for all): ")
 
-if filter_port:
+if filter_port.isdigit():
     filter_port = int(filter_port)
 else:
     filter_port = None
